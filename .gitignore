@@ -1,0 +1,32 @@
+# Entornos virtuales
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+
+# Archivos sensibles
+.env
+
+# Snowflake temp files
+*.log
+
+# DBT
+dbt/target/
+dbt/dbt_modules/
+dbt/.dbt/
+dbt/logs/
+
+# Streamlit cache
+.streamlit/
+*.streamlit-cache/
+.streamlit/.env/
+.streamlit/logs/
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de bases de datos temporales
+*.sqlite
+*.db
