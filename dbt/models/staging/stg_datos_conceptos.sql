@@ -1,7 +1,5 @@
--- models/concepto_base_transformado.sql
-
 with base as (
-    select * from {{ ref('datos_financieros') }}
+    select * from {{ ref('stg_datos_financieros') }}
 ),
 
 conceptos_expandido as (
@@ -9,10 +7,9 @@ conceptos_expandido as (
         concepto,
         inclusion,
         exclusion
-    from {{ ref('conceptos_base') }}
+    from {{ ref('stg_conceptos_base') }}
 ),
 
--- Expandimos exclusiones como tabla (puede tener varias por concepto)
 exclusiones_expandido as (
     select
         concepto,
@@ -21,7 +18,6 @@ exclusiones_expandido as (
     lateral flatten(input => split(exclusion, ';'))
 ),
 
--- Ahora unimos base con conceptos según inclusion y exclusion (via LEFT JOIN)
 base_conceptos as (
     select
         b.*,
