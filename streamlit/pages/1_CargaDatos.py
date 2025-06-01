@@ -44,9 +44,11 @@ nubitaPracticas:
       warehouse: {os.getenv('SNOWFLAKE_WAREHOUSE')}
   target: dev
 """
-    os.makedirs(os.path.expanduser("~/.dbt"), exist_ok=True)
-    with open(os.path.expanduser("~/.dbt/profiles.yml"), "w") as f:
+    profiles_dir = os.path.join(DBT_PROJECT_PATH, ".dbt")
+    os.makedirs(profiles_dir, exist_ok=True)
+    with open(os.path.join(profiles_dir, "profiles.yml"), "w") as f:
         f.write(profile_content)
+    return profiles_dir
 
 st.header("📥 Carga de Datos")
 
@@ -93,7 +95,7 @@ if uploaded_file:
                 if st.button("🚀 Cargar a Snowflake (Reemplaza)"):
                     try:
 
-                        crear_profiles_yml()
+                        profiles_dir = crear_profiles_yml()
 
                         file_path = os.path.join(SEEDS_PATH, f"{selected_seed}.csv")
                         os.makedirs(SEEDS_PATH, exist_ok=True)
@@ -101,7 +103,7 @@ if uploaded_file:
                         st.info(f"📂 Archivo guardado como `{file_path}`.")
                     
                         result = subprocess.run(
-                            ["dbt", "seed", "--select", selected_seed],
+                            ["dbt", "seed", "--select", selected_seed, "--profiles-dir", profiles_dir],
                             cwd=DBT_PROJECT_PATH,
                             stdout=subprocess.PIPE,
                             stderr=subprocess.PIPE,
