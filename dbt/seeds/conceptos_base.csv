@@ -1,5 +1,17 @@
 concepto,inclusion,exclusion
-Damages,622*,622001;622002
-Buys,601*,
-Sells,600*,
-Operative_incomes,700*,
+Revenues from operations,705*;708*;752*;759*,
+"Goods, Raw Materials & Supplies",601*;6070001,
+Operational Offices Rent,6210002,
+Car Rental,6210004;6210005;6210006,
+Damages,622*,
+Insurance,625*,
+Fuel,6290002,
+Direct Overhead expenses,629*,6290002
+Direct Personnel Cost,6400001;6070002,
+Direct Social Security Cost,642*,
+HQ Office Rent,6210003,
+"Professional Services (IT, Legal)",623*,
+"Electricity, water and phone",628*,
+Bank commissions,626*,
+Indirect costs invoiced to group,6400005,
+Profit from rent,6210001,

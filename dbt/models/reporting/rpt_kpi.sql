@@ -1,5 +1,5 @@
 with base as (
-    select * from {{ ref('fct_pnl') }}
+    select * from {{ ref('stg_datos_detallados') }}
 ),
 
 resumen as (

@@ -14,5 +14,5 @@ def init_connection():
 
 def load_data():
     conn = init_connection()
-    query = "SELECT * FROM PNL_FINAL"
+    query = "SELECT * FROM STG_DATOS_DETALLADOS"
     return pd.read_sql(query, conn)
