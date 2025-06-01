@@ -2,28 +2,28 @@ from utils.connection import init_connection
 import pandas as pd
 
 def get_template_dataframe(seed_name):
-    if seed_name == "datos_financieros":
+    if seed_name == "DATOS_FINANCIEROS":
         return pd.DataFrame({
-            "numero_cuenta": ["600001"],
-            "mes": [1],
-            "anio": [2025],
-            "importe": [10000.00]
+            "NUMERO_CUENTA": ["600001"],
+            "MES": [1],
+            "ANIO": [2025],
+            "IMPORTE": [10000.00]
         })
-    elif seed_name == "conceptos_base":
+    elif seed_name == "CONCEPTOS_BASE":
         return pd.DataFrame({
-            "concepto": ["Sells"],
-            "inclusion": ["600*"],
-            "exclusion": [""]
+            "CONCEPTO": ["Sells"],
+            "INCLUSION": ["600*"],
+            "EXCLUSION": [""]
         })
-    elif seed_name == "agrupaciones":
+    elif seed_name == "AGRUPACIONES":
         return pd.DataFrame({
-            "agrupacion": ["Revenue"],
-            "conceptos": ["Sells"]
+            "AGRUPACION": ["Revenue"],
+            "CONCEPTOS": ["Sells"]
         })
-    elif seed_name == "calculados":
+    elif seed_name == "CALCULADOS":
         return pd.DataFrame({
-            "concepto_calculado": ["Profit"],
-            "tipo_calculo": ["Resta"],
-            "concepto_1": ["Sells"],
-            "concepto_2": ["Buys;Damages"]
+            "CONCEPTO_CALCULADO": ["Profit"],
+            "TIPO_CALCULO": ["Resta"],
+            "CONCEPTO_1": ["Sells"],
+            "CONCEPTO_2": ["Buys;Damages"]
         })

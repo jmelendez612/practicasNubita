@@ -7,14 +7,15 @@ from datetime import datetime
 from pathlib import Path
 from utils.helpers import get_template_dataframe
 from utils.validators import validar_semantica
+from utils.connection import upload_dataframe
 
 
 # Diccionario de plantillas
 seed_names = {
-        "datos_financieros": "Contiene los registros contables por cuenta, mes y año, con su importe.",
-        "conceptos_base": "Define los conceptos contables con reglas de inclusión y exclusión por número de cuenta.",
-        "agrupaciones": "Agrupa múltiples conceptos individuales bajo categorías como Revenue o Cost.",
-        "calculados": "Define conceptos calculados a partir de otros conceptos base, por ejemplo Profit."
+        "DATOS_FINANCIEROS": "Contiene los registros contables por cuenta, mes y año, con su importe.",
+        "CONCEPTOS_BASE": "Define los conceptos contables con reglas de inclusión y exclusión por número de cuenta.",
+        "AGRUPACIONES": "Agrupa múltiples conceptos individuales bajo categorías como Revenue o Cost.",
+        "CALCULADOS": "Define conceptos calculados a partir de otros conceptos base, por ejemplo Profit."
 }
 
 #Rutas
@@ -22,43 +23,6 @@ DBT_PROJECT_PATH = "../dbt"
 SEEDS_PATH = os.path.join(DBT_PROJECT_PATH, "seeds")
 LOG_PATH = "logs"
 os.makedirs(LOG_PATH, exist_ok=True)
-
-#Funciones adicionales
-def crear_profiles_yml():
-
-    # Leer desde st.secrets
-    account = st.secrets["SNOWFLAKE_ACCOUNT"]
-    user = st.secrets["SNOWFLAKE_USER"]
-    password = st.secrets["SNOWFLAKE_PASSWORD"]
-    database = st.secrets["SNOWFLAKE_DATABASE"]
-    schema = st.secrets["SNOWFLAKE_SCHEMA"]
-    warehouse = st.secrets["SNOWFLAKE_WAREHOUSE"]
-    role = st.secrets["SNOWFLAKE_ROLE"]
-
-    profile_content = f"""
-nubitaPracticas:
-  outputs:
-    dev:
-      account: {account}
-      database: {database}
-      password: {password}
-      role: {role}
-      schema: {schema}
-      threads: 4
-      type: snowflake
-      user: {user}
-      warehouse: {warehouse}
-  target: dev
-"""
-    
-    profile_dir = os.path.join(os.getcwd(), "dbt_profile")
-    os.makedirs(profile_dir, exist_ok=True)
-
-    profile_path = os.path.join(profile_dir, "profiles.yml")
-    with open(profile_path, "w") as f:
-        f.write(profile_content)
-
-    return profile_dir
 
 st.header("📥 Carga de Datos")
 
@@ -103,46 +67,26 @@ if uploaded_file:
 
                 #Botón para cargar a Snowflake
                 if st.button("🚀 Cargar a Snowflake (Reemplaza)"):
-                    try:
-
-                        profile_dir = crear_profiles_yml()
-                        profiles_path = os.path.join(profile_dir, "profiles.yml")
-
-                        # Mostrar contenido del archivo generado
-                        with open(profiles_path, "r") as f:
-                            contenido_yml = f.read()
-
-                        st.subheader("📄 Archivo profiles.yml generado")
-                        st.code(contenido_yml, language="yaml")                                                 
-
+                    try:                                             
                          # Guardar el archivo CSV en la carpeta seeds
                         file_path = os.path.join(SEEDS_PATH, f"{selected_seed}.csv")
                         os.makedirs(SEEDS_PATH, exist_ok=True)
                         df_uploaded.to_csv(file_path, index=False, encoding="utf-8")
                         st.info(f"📂 Archivo guardado como `{file_path}`.")
 
-                        # Ejecutar dbt seed
-                        result = subprocess.run(
-                            ["dbt", "seed", "--select", selected_seed, "--profiles-dir", profile_dir],
-                            cwd=DBT_PROJECT_PATH,
-                            stdout=subprocess.PIPE,
-                            stderr=subprocess.PIPE,
-                            text=True
-                        )
+                        result = upload_dataframe(df_uploaded, selected_seed)
+                        #st.info(f"Result`{result}`.")
 
                         #Registro del log
                         log_time = datetime.now().strftime("%Y%m%d_%H%M%S")
                         log_file = os.path.join(LOG_PATH, f"seed_{selected_seed}_{log_time}.log")
                         with open(log_file, "w", encoding="utf-8") as f:
-                            f.write(result.stdout)
-                            f.write("\n---\n")
-                            f.write(result.stderr)                  
+                            f.write(f"[{log_time}] ✅ Carga exitosa.\n")           
 
-                        if result.returncode == 0:
+                        if result:
                             st.success("✅ Tabla actualizada en Snowflake")
                         else:
-                            st.error("❌ Error al ejecutar `dbt seed`")
-                            st.text(result.stderr)
+                            st.error("❌ Error al ejecutar la carga de datos")
                             st.info(f"📄 Detalles guardados en `{log_file}`.")
                     except Exception as e:
                         st.error(f"❌ Error durante la carga: {str(e)}")
