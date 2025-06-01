@@ -66,6 +66,9 @@ if uploaded_file:
                 #Botón para cargar a Snowflake
                 if st.button("🚀 Cargar a Snowflake (Reemplaza)"):
                     try:
+
+                        os.makedirs(SEEDS_PATH, exist_ok=True)
+                        
                         file_path = os.path.join(SEEDS_PATH, f"{selected_seed}.csv")
                         df_uploaded.to_csv(file_path, index=False, encoding="utf-8")
                         st.info(f"📂 Archivo guardado como `{file_path}`.")
