@@ -7,6 +7,10 @@ from datetime import datetime
 from utils.helpers import get_template_dataframe
 from utils.validators import validar_semantica
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 # Diccionario de plantillas
 seed_names = {
@@ -21,6 +25,28 @@ DBT_PROJECT_PATH = "../dbt"
 SEEDS_PATH = os.path.join(DBT_PROJECT_PATH, "seeds")
 LOG_PATH = "logs"
 os.makedirs(LOG_PATH, exist_ok=True)
+
+#Funciones adicionales
+def crear_profiles_yml():
+    import os
+    profile_content = f"""
+nubitaPracticas:
+  outputs:
+    dev:
+      account: {os.getenv('SNOWFLAKE_ACCOUNT')}
+      database: {os.getenv('SNOWFLAKE_DATABASE')}
+      password: {os.getenv('SNOWFLAKE_PASSWORD')}
+      role: {os.getenv('SNOWFLAKE_ROLE')}
+      schema: {os.getenv('SNOWFLAKE_SCHEMA')}
+      threads: 4
+      type: snowflake
+      user: {os.getenv('SNOWFLAKE_USER')}
+      warehouse: {os.getenv('SNOWFLAKE_WAREHOUSE')}
+  target: dev
+"""
+    os.makedirs(os.path.expanduser("~/.dbt"), exist_ok=True)
+    with open(os.path.expanduser("~/.dbt/profiles.yml"), "w") as f:
+        f.write(profile_content)
 
 st.header("📥 Carga de Datos")
 
@@ -67,9 +93,10 @@ if uploaded_file:
                 if st.button("🚀 Cargar a Snowflake (Reemplaza)"):
                     try:
 
-                        os.makedirs(SEEDS_PATH, exist_ok=True)
-                        
+                        crear_profiles_yml()
+
                         file_path = os.path.join(SEEDS_PATH, f"{selected_seed}.csv")
+                        os.makedirs(SEEDS_PATH, exist_ok=True)
                         df_uploaded.to_csv(file_path, index=False, encoding="utf-8")
                         st.info(f"📂 Archivo guardado como `{file_path}`.")
                     

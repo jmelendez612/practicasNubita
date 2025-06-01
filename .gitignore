@@ -22,6 +22,8 @@ dbt/logs/
 *.streamlit-cache/
 .streamlit/.env/
 .streamlit/logs/
+.streamlit/secrets.toml
+
 
 # Archivos del sistema
 .DS_Store
