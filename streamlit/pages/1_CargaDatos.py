@@ -7,11 +7,6 @@ from datetime import datetime
 from utils.helpers import get_template_dataframe
 from utils.validators import validar_semantica
 
-from dotenv import load_dotenv
-
-load_dotenv()
-
-
 # Diccionario de plantillas
 seed_names = {
         "datos_financieros": "Contiene los registros contables por cuenta, mes y año, con su importe.",
@@ -28,20 +23,29 @@ os.makedirs(LOG_PATH, exist_ok=True)
 
 #Funciones adicionales
 def crear_profiles_yml():
-    import os
+
+    # Leer desde st.secrets
+    account = st.secrets["SNOWFLAKE_ACCOUNT"]
+    user = st.secrets["SNOWFLAKE_USER"]
+    password = st.secrets["SNOWFLAKE_PASSWORD"]
+    database = st.secrets["SNOWFLAKE_DATABASE"]
+    schema = st.secrets["SNOWFLAKE_SCHEMA"]
+    warehouse = st.secrets["SNOWFLAKE_WAREHOUSE"]
+    role = st.secrets["SNOWFLAKE_ROLE"]
+
     profile_content = f"""
 nubitaPracticas:
   outputs:
     dev:
-      account: {os.getenv('SNOWFLAKE_ACCOUNT')}
-      database: {os.getenv('SNOWFLAKE_DATABASE')}
-      password: {os.getenv('SNOWFLAKE_PASSWORD')}
-      role: {os.getenv('SNOWFLAKE_ROLE')}
-      schema: {os.getenv('SNOWFLAKE_SCHEMA')}
+      account: {account}
+      database: {database}
+      password: {password}
+      role: {role}
+      schema: {schema}
       threads: 4
       type: snowflake
-      user: {os.getenv('SNOWFLAKE_USER')}
-      warehouse: {os.getenv('SNOWFLAKE_WAREHOUSE')}
+      user: {user}
+      warehouse: {warehouse}
   target: dev
 """
     profiles_dir = os.path.join(DBT_PROJECT_PATH, ".dbt")
