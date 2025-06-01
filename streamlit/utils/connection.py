@@ -40,9 +40,7 @@ def upload_dataframe(df: pd.DataFrame, table_name: str, overwrite: bool = True) 
     try:
         cs = conn.cursor()
         if overwrite:
-            # Borra datos previos
             cs.execute(f"TRUNCATE TABLE IF EXISTS {table_name.upper()}")
-        # Usa write_pandas para carga eficiente
         success, nchunks, nrows, _ = write_pandas(conn, df, table_name.upper())
         return success
     except Exception as e:
