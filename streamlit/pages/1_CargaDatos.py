@@ -51,14 +51,14 @@ nubitaPracticas:
   target: dev
 """
     
-    home = Path.home()
-    profiles_dir = os.path.join(home, ".dbt")
-    os.makedirs(profiles_dir, exist_ok=True)
+    profile_dir = os.path.join(os.getcwd(), "dbt_profile")
+    os.makedirs(profile_dir, exist_ok=True)
 
-    with open(os.path.join(profiles_dir, "profiles.yml"), "w") as f:
+    profile_path = os.path.join(profile_dir, "profiles.yml")
+    with open(profile_path, "w") as f:
         f.write(profile_content)
 
-    return profiles_dir
+    return profile_dir
 
 st.header("📥 Carga de Datos")
 
@@ -105,15 +105,25 @@ if uploaded_file:
                 if st.button("🚀 Cargar a Snowflake (Reemplaza)"):
                     try:
 
-                        crear_profiles_yml()
+                        profile_dir = crear_profiles_yml()
+                        profiles_path = os.path.join(profile_dir, "profiles.yml")
 
+                        # Mostrar contenido del archivo generado
+                        with open(profiles_path, "r") as f:
+                            contenido_yml = f.read()
+
+                        st.subheader("📄 Archivo profiles.yml generado")
+                        st.code(contenido_yml, language="yaml")                                                 
+
+                         # Guardar el archivo CSV en la carpeta seeds
                         file_path = os.path.join(SEEDS_PATH, f"{selected_seed}.csv")
                         os.makedirs(SEEDS_PATH, exist_ok=True)
                         df_uploaded.to_csv(file_path, index=False, encoding="utf-8")
                         st.info(f"📂 Archivo guardado como `{file_path}`.")
-                    
+
+                        # Ejecutar dbt seed
                         result = subprocess.run(
-                            ["dbt", "seed", "--select", selected_seed],
+                            ["dbt", "seed", "--select", selected_seed, "--profiles-dir", profile_dir],
                             cwd=DBT_PROJECT_PATH,
                             stdout=subprocess.PIPE,
                             stderr=subprocess.PIPE,
