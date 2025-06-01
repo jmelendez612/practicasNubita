@@ -4,8 +4,10 @@ import os
 import subprocess
 
 from datetime import datetime
+from pathlib import Path
 from utils.helpers import get_template_dataframe
 from utils.validators import validar_semantica
+
 
 # Diccionario de plantillas
 seed_names = {
@@ -48,10 +50,14 @@ nubitaPracticas:
       warehouse: {warehouse}
   target: dev
 """
-    profiles_dir = os.path.join(DBT_PROJECT_PATH, ".dbt")
+    
+    home = Path.home()
+    profiles_dir = os.path.join(home, ".dbt")
     os.makedirs(profiles_dir, exist_ok=True)
+
     with open(os.path.join(profiles_dir, "profiles.yml"), "w") as f:
         f.write(profile_content)
+
     return profiles_dir
 
 st.header("📥 Carga de Datos")
@@ -99,7 +105,7 @@ if uploaded_file:
                 if st.button("🚀 Cargar a Snowflake (Reemplaza)"):
                     try:
 
-                        profiles_dir = crear_profiles_yml()
+                        crear_profiles_yml()
 
                         file_path = os.path.join(SEEDS_PATH, f"{selected_seed}.csv")
                         os.makedirs(SEEDS_PATH, exist_ok=True)
@@ -107,7 +113,7 @@ if uploaded_file:
                         st.info(f"📂 Archivo guardado como `{file_path}`.")
                     
                         result = subprocess.run(
-                            ["dbt", "seed", "--select", selected_seed, "--profiles-dir", profiles_dir],
+                            ["dbt", "seed", "--select", selected_seed],
                             cwd=DBT_PROJECT_PATH,
                             stdout=subprocess.PIPE,
                             stderr=subprocess.PIPE,
