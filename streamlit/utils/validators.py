@@ -4,40 +4,43 @@ import streamlit as st
 def validar_semantica(seed_name: str, df: pd.DataFrame) -> bool:
     valid = True
 
-    if seed_name == "agrupaciones": #Nota para mejorar para que no esté hardcodeado#JM
+    if seed_name == "AGRUPACIONES": #Nota para mejorar para que no esté hardcodeado#JM
         for idx, row in df.iterrows():
-            if pd.isna(row["agrupacion"]) or pd.isna(row["conceptos"]):
+            if pd.isna(row["AGRUPACION"]) or pd.isna(row["CONCEPTOS"]):
                 st.error(f"❌ Fila {idx+2}: Todos los campos son obligatorios.")
                 valid = False
                 break
 
-    elif seed_name == "conceptos_base":
+    elif seed_name == "CONCEPTOS_BASE":
         for idx, row in df.iterrows():
-            if pd.isna(row["concepto"]) or pd.isna(row["inclusion"]):
+            if pd.isna(row["CONCEPTO"]) or pd.isna(row["INCLUSION"]):
                 st.error(f"❌ Fila {idx+2}: Todos los campos son obligatorios.")
                 valid = False
                 break
 
-    elif seed_name == "calculados":
-        st.warning("⚠️ La validación semántica para esta plantilla está deshabilitada temporalmente.")
-        valid = False
-
-    elif seed_name == "datos_financieros":
+    elif seed_name == "CALCULADOS":
         for idx, row in df.iterrows():
-            if (pd.isna(row["numero_cuenta"]) or pd.isna(row["mes"]) or pd.isna(row["anio"]) or pd.isna(row["importe"])):
+            if (pd.isna(row["CONCEPTO_CALCULADO"]) or pd.isna(row["TIPO_CALCULO"]) or pd.isna(row["CONCEPTO_SUMA"]) or pd.isna(row["CONCEPTO_RESTA"])):
+                st.error(f"❌ Fila {idx+2}: Todos los campos son obligatorios.")
+                valid = False
+                break
+
+    elif seed_name == "DATOS_FINANCIEROS":
+        for idx, row in df.iterrows():
+            if (pd.isna(row["NUMERO_CUENTA"]) or pd.isna(row["MES"]) or pd.isna(row["ANIO"]) or pd.isna(row["IMPORTE"])):
                 st.error(f"❌ Fila {idx+2}: Todos los campos son obligatorios.")
                 valid = False
                 break
             try:
-                int(row["mes"])
-                int(row["anio"])
-                imp = float(row["importe"])
+                int(row["MES"])
+                int(row["ANIO"])
+                imp = float(row["IMPORTE"])
                 if not imp.is_integer():
-                    st.warning(f"⚠️ Fila {idx+2}: El importe tiene decimales, lo cual está inhabilitado por ahora.")  #Nota para habilitar decimales#JM
+                    st.warning(f"⚠️ Fila {idx+2}: El IMPORTE tiene decimales, lo cual está inhabilitado por ahora.")  #Nota para habilitar decimales#JM
                     valid = False
                     break
             except ValueError:
-                st.error(f"❌ Fila {idx+2}: 'mes', 'anio' e 'importe' deben ser números enteros.")
+                st.error(f"❌ Fila {idx+2}: 'MES', 'ANIO' e 'IMPORTE' deben ser números enteros.")
                 valid = False
                 break
 

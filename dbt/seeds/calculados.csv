@@ -1,2 +1,10 @@
-concepto_calculado,tipo_calculo,concepto_suma,concepto_resta
-Profit,Resta,Sells,Buys;Damages
+CONCEPTO_CALCULADO,TIPO_CALCULO,CONCEPTO_SUMA,CONCEPTO_RESTA
+Profit from rent,Resta,Revenues from rent,Non oprational rent expenses
+Gross margin value,Resta,Revenues from operations,Direct Costs from operations
+Gross margin rate,Division,Gross margin value,Revenues from operations
+% indirect / sales,Division,Indirect cost,Revenues from operations
+E B I T D A ,Resta,Gross margin value,Indirect cost
+% EBITDA / sales,Division,E B I T D A ,Revenues from operations
+Operational business result,Resta,Gross margin value,Indirect cost
+BUSINESS PERFORMANCE,Suma,Operational business result,Profit from rent
+% Business performance,Division,BUSINESS PERFORMANCE,Revenues from operations

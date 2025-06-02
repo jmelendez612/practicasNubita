@@ -44,6 +44,8 @@ resultado_final as (
         c.anio,
         c.importe,
         TO_CHAR(DATE_FROM_PARTS(c.anio, c.mes, 1), 'Mon YYYY') AS periodo,
+        'real' as tipo_nivel, 
+        null as orden_nivel2
     from cuentas_con_concepto c
     left join agrupaciones_expandido ae
         on lower(c.concepto) = lower(ae.concepto)

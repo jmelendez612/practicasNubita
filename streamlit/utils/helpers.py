@@ -24,6 +24,6 @@ def get_template_dataframe(seed_name):
         return pd.DataFrame({
             "CONCEPTO_CALCULADO": ["Profit"],
             "TIPO_CALCULO": ["Resta"],
-            "CONCEPTO_1": ["Sells"],
-            "CONCEPTO_2": ["Buys;Damages"]
+            "CONCEPTO_SUMA": ["Sells"],
+            "CONCEPTO_RESTA": ["Buys;Damages"]
         })
