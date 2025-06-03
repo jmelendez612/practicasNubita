@@ -7,7 +7,7 @@ st.markdown("Puedes descargar el reporte del mes y año seleccionados en formato
 
 #Conexión a DB
 try:
-    #df = load_data()
+    #df = load_data()#Para mejorar JM comentado para que no haya descarga temporal
 
     #df["mes"] = df["mes"].astype(int)
     #df["anio"] = df["anio"].astype(int)

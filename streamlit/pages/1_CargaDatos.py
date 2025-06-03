@@ -10,7 +10,7 @@ from utils.validators import validar_semantica
 from utils.connection import upload_dataframe
 
 
-# Diccionario de plantillas
+# Diccionario de plantillas #Para mejorar JM
 seed_names = {
         "DATOS_FINANCIEROS": "Contiene los registros contables por cuenta, mes y año, con su importe.",
         "CONCEPTOS_BASE": "Define los conceptos contables con reglas de inclusión y exclusión por número de cuenta.",
@@ -18,7 +18,7 @@ seed_names = {
         "CALCULADOS": "Define conceptos calculados a partir de otros conceptos base, por ejemplo Profit."
 }
 
-#Rutas
+#Rutas #Para mejorar JM
 DBT_PROJECT_PATH = "../dbt"
 SEEDS_PATH = os.path.join(DBT_PROJECT_PATH, "seeds")
 LOG_PATH = "logs"
@@ -72,7 +72,7 @@ if uploaded_file:
                         file_path = os.path.join(SEEDS_PATH, f"{selected_seed}.csv")
                         os.makedirs(SEEDS_PATH, exist_ok=True)
                         df_uploaded.to_csv(file_path, index=False, encoding="utf-8")
-                        st.info(f"📂 Archivo guardado como `{file_path}`.")
+                        st.info(f"📂 Archivo guardado como `{file_path}`.")#Para mejorar JM
 
                         result = upload_dataframe(df_uploaded, selected_seed)
                         #st.info(f"Result`{result}`.")
