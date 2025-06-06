@@ -16,6 +16,8 @@ dbt/target/
 dbt/dbt_modules/
 dbt/.dbt/
 dbt/logs/
+dbt/dbt_packages
+dbt/package-lock.yml
 
 # Streamlit cache
 .streamlit/

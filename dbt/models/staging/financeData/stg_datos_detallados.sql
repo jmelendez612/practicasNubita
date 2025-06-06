@@ -6,25 +6,36 @@ conceptos_procesados as (
     select * from {{ ref('stg_conceptos_procesados') }}
 ),
 
+inclusiones as (
+    select * 
+    from conceptos_procesados
+    where tipo_regla = 'inclusion'
+),
+
+exclusiones as (
+    select * 
+    from conceptos_procesados
+    where tipo_regla = 'exclusion'
+),
+
 cuentas_con_concepto as (
     select
-        c.concepto,
+        i.concepto,
         d.numero_cuenta,
         d.mes,
         d.anio,
-        d.importe,
-        c2.exclusion_cuenta
+        d.importe
     from datos_financieros d
-    join conceptos_procesados c
+    join inclusiones i
         on (
-            (right(c.inclusion_patron, 1) = '*' and d.numero_cuenta like left(c.inclusion_patron, len(c.inclusion_patron) - 1) || '%')
+            (right(i.cuentas, 1) = '*' and d.numero_cuenta like left(i.cuentas, len(i.cuentas) - 1) || '%')
             or
-            (right(c.inclusion_patron, 1) != '*' and d.numero_cuenta = c.inclusion_patron)
+            (right(i.cuentas, 1) != '*' and d.numero_cuenta = i.cuentas)
         )
-    left join conceptos_procesados c2
-        on c.concepto = c2.concepto
-       and d.numero_cuenta = c2.exclusion_cuenta
-    where c2.exclusion_cuenta is null
+    left join exclusiones e
+        on i.concepto = e.concepto
+        and d.numero_cuenta = e.cuentas
+    where e.cuentas is null
 ),
 
 agrupaciones_expandido as (
@@ -44,8 +55,8 @@ resultado_final as (
         c.anio,
         c.importe,
         TO_CHAR(DATE_FROM_PARTS(c.anio, c.mes, 1), 'Mon YYYY') AS periodo,
-        'real' as tipo_nivel, 
-        null as orden_nivel2
+        1 as tipo_nivel, 
+        0 as orden_nivel2
     from cuentas_con_concepto c
     left join agrupaciones_expandido ae
         on lower(c.concepto) = lower(ae.concepto)
